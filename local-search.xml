@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  
+  
+  
+  <entry>
+    <title>The Annotated Transformer 源码剖析与复现笔记</title>
+    <link href="/2026/03/03/Transformer-Code-Note/"/>
+    <url>/2026/03/03/Transformer-Code-Note/</url>
+    
+    <content type="html"><![CDATA[<h2 id="💡-项目本质与复现动机"><a href="#💡-项目本质与复现动机" class="headerlink" title="💡 项目本质与复现动机"></a>💡 项目本质与复现动机</h2><p>“Paper is cheap, show me the code.”<br>《Attention Is All You Need》虽然是开山之作，但忽略了许多工程细节。哈佛 NLP 团队的这个项目将论文原句与 PyTorch 代码逐行对应，是理解 Transformer 底层张量流转（Tensor Flow）和 Mask 机制的最佳学习材料。此笔记记录了我的本地复现过程与关键代码的理解。</p><h2 id="🛠️-个人复现感悟与思考"><a href="#🛠️-个人复现感悟与思考" class="headerlink" title="🛠️ 个人复现感悟与思考"></a>🛠️ 个人复现感悟与思考</h2><hr><p><strong>附录</strong>：</p><ul><li>官方源码仓库：<a href="https://github.com/harvardnlp/annotated-transformer">harvardnlp&#x2F;annotated-transformer</a></li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>Tech-Practice</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Transformer</tag>
+      
+      <tag>PyTorch</tag>
+      
+      <tag>Source-Code</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>GPT-1: Improving Language Understanding by Generative Pre-Training</title>
+    <link href="/2026/03/03/GPT1-Note/"/>
+    <url>/2026/03/03/GPT1-Note/</url>
+    
+    <content type="html"><![CDATA[<h2 id="📝-核心点"><a href="#📝-核心点" class="headerlink" title="📝 核心点"></a>📝 核心点</h2><p>Decoder-Only架构，仅解码，不编码，并且提出了pre-training and fine-tuning，坚持使用自回归（Autoregressive）方式，即“预测下一个 token”，利用仅预测next token的方式预训练模型，通过增加linear layer来微调全参使输出适配各种task，并且fine-tuning过程中的损失函数也很值得考量，一方面需要适配具体任务，另一方面也还需要继续学习原本的预测next token的任务，使得模型不会出现灾难性遗忘。文中隐隐感觉出现prompt提示词工程的思想和后续SFT的思想。当时性能不如 BERT，但 OpenAI 坚信“生成”才是通往通用的路径。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Paper-Reading</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>GPT</tag>
+      
+      <tag>NLP</tag>
+      
+      <tag>Generative-Pretraining</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Attention Is All You Need (Transformer) 精读笔记</title>
+    <link href="/2026/03/03/Transformer-Note/"/>
+    <url>/2026/03/03/Transformer-Note/</url>
+    
+    <content type="html"><![CDATA[<h2 id="📝-个人思考"><a href="#📝-个人思考" class="headerlink" title="📝 个人思考"></a>📝 个人思考</h2><p>提出了 Transformer 架构，引入 Self-Attention（自注意力机制）和 Positional Encoding（位置编码）。它解决了长距离依赖问题，并极大地提高了训练的并行度。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Paper-Reading</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>NLP</tag>
+      
+      <tag>Transformer</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  
+</search>

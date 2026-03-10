@@ -5,10 +5,10 @@
   
   <entry>
     <title>GPT-2: Language Models are Unsupervised Multitask Learners</title>
-    <link href="/2026/03/10/GPT2-Note/"/>
-    <url>/2026/03/10/GPT2-Note/</url>
+    <link href="/2026/03/10/Transformer-Code-Note/"/>
+    <url>/2026/03/10/Transformer-Code-Note/</url>
     
-    <content type="html"><![CDATA[<h2 id="📝-核心点"><a href="#📝-核心点" class="headerlink" title="📝 核心点"></a>📝 核心点</h2><p>转变了 GPT-1 和 BERT 的“预训练+有监督微调”范式，提出语言模型本质上就是无监督的多任务学习器。坚持使用自回归方式预测 next token，但在面对下游任务时，不再添加特定任务的架构头（Task-specific head）进行微调。其核心思想是将目标建模为 $p(\text{output}|\text{input}, \text{task})$，将自然语言作为描述和切换任务的统一接口。模型架构依然是 Decoder-Only，但参数量扩展到了 1.5B（15亿），并引入了将 LayerNorm 提前（Pre-Norm）以及 $1/\sqrt{N}$ 初始化缩放等关键架构调整，以保证深层网络的训练稳定性。</p><p>在数据构建方面强调了文本质量：避免直接使用未经清洗的大规模网页抓取数据，而是利用 Reddit 上获得 3 个以上 Karma（点赞数）的外部链接作为启发式过滤标准，构建了高质量的 WebText 数据集。同时，引入了限制跨字符类别合并的纯字节级 BPE（Byte Pair Encoding）算法，有效缓解了 OOV（未登录词）和词表碎片化问题，使模型能够处理任意的 Unicode 字符串。</p><p>在实验层面，GPT-2 采用了 Zero-shot（零样本）设定，在测试时不进行任何参数更新。仅通过拼接自然语言提示词（例如在文末加上 <code>TL;DR:</code> 引导模型生成摘要），就在 8 个语言建模数据集中的 7 个上达到了当时的 SOTA。虽然在机器翻译等复杂任务上的表现尚处初期水平，但实验清晰地展示了模型性能随容量增加呈对数线性增长的趋势。这篇论文为后续的大规模语言模型发展、提示工程（Prompt Engineering）以及上下文学习（In-Context Learning）奠定了重要的理论与实验基础。</p>]]></content>
+    <content type="html"><![CDATA[<h2 id="📝-核心点"><a href="#📝-核心点" class="headerlink" title="📝 核心点"></a>📝 核心点</h2><p>转变了 GPT-1 和 BERT 的“预训练+有监督微调”范式，提出语言模型本质上就是无监督的多任务学习器。坚持使用自回归方式预测 next token，但在面对下游任务时，不再添加特定任务的架构头（Task-specific head）进行微调。其核心思想是将目标建模为 $p(\text{output} \vert \text{input}, \text{task})$，将自然语言作为描述和切换任务的统一接口。模型架构依然是 Decoder-Only，但参数量扩展到了 1.5B（15亿），并引入了将 LayerNorm 提前（Pre-Norm）以及 $1/\sqrt{N}$ 初始化缩放等关键架构调整，以保证深层网络的训练稳定性。</p><p>在数据构建方面强调了文本质量：避免直接使用未经清洗的大规模网页抓取数据，而是利用 Reddit 上获得 3 个以上 Karma（点赞数）的外部链接作为启发式过滤标准，构建了高质量的 WebText 数据集。同时，引入了限制跨字符类别合并的纯字节级 BPE（Byte Pair Encoding）算法，有效缓解了 OOV（未登录词）和词表碎片化问题，使模型能够处理任意的 Unicode 字符串。</p><p>在实验层面，GPT-2 采用了 Zero-shot（零样本）设定，在测试时不进行任何参数更新。仅通过拼接自然语言提示词（例如在文末加上 <code>TL;DR:</code> 引导模型生成摘要），就在 8 个语言建模数据集中的 7 个上达到了当时的 SOTA。虽然在机器翻译等复杂任务上的表现尚处初期水平，但实验清晰地展示了模型性能随容量增加呈对数线性增长的趋势。这篇论文为后续的大规模语言模型发展、提示工程（Prompt Engineering）以及上下文学习（In-Context Learning）奠定了重要的理论与实验基础。</p>]]></content>
     
     
     <categories>
@@ -36,10 +36,10 @@
   
   <entry>
     <title>GPT-2: Language Models are Unsupervised Multitask Learners</title>
-    <link href="/2026/03/10/Transformer-Code-Note/"/>
-    <url>/2026/03/10/Transformer-Code-Note/</url>
+    <link href="/2026/03/10/GPT2-Note/"/>
+    <url>/2026/03/10/GPT2-Note/</url>
     
-    <content type="html"><![CDATA[<h2 id="📝-核心点"><a href="#📝-核心点" class="headerlink" title="📝 核心点"></a>📝 核心点</h2><p>转变了 GPT-1 和 BERT 的“预训练+有监督微调”范式，提出语言模型本质上就是无监督的多任务学习器。坚持使用自回归方式预测 next token，但在面对下游任务时，不再添加特定任务的架构头（Task-specific head）进行微调。其核心思想是将目标建模为 $p(\text{output} \vert \text{input}, \text{task})$，将自然语言作为描述和切换任务的统一接口。模型架构依然是 Decoder-Only，但参数量扩展到了 1.5B（15亿），并引入了将 LayerNorm 提前（Pre-Norm）以及 $1/\sqrt{N}$ 初始化缩放等关键架构调整，以保证深层网络的训练稳定性。</p><p>在数据构建方面强调了文本质量：避免直接使用未经清洗的大规模网页抓取数据，而是利用 Reddit 上获得 3 个以上 Karma（点赞数）的外部链接作为启发式过滤标准，构建了高质量的 WebText 数据集。同时，引入了限制跨字符类别合并的纯字节级 BPE（Byte Pair Encoding）算法，有效缓解了 OOV（未登录词）和词表碎片化问题，使模型能够处理任意的 Unicode 字符串。</p><p>在实验层面，GPT-2 采用了 Zero-shot（零样本）设定，在测试时不进行任何参数更新。仅通过拼接自然语言提示词（例如在文末加上 <code>TL;DR:</code> 引导模型生成摘要），就在 8 个语言建模数据集中的 7 个上达到了当时的 SOTA。虽然在机器翻译等复杂任务上的表现尚处初期水平，但实验清晰地展示了模型性能随容量增加呈对数线性增长的趋势。这篇论文为后续的大规模语言模型发展、提示工程（Prompt Engineering）以及上下文学习（In-Context Learning）奠定了重要的理论与实验基础。</p>]]></content>
+    <content type="html"><![CDATA[<h2 id="📝-核心点"><a href="#📝-核心点" class="headerlink" title="📝 核心点"></a>📝 核心点</h2><p>转变了 GPT-1 和 BERT 的“预训练+有监督微调”范式，提出语言模型本质上就是无监督的多任务学习器。坚持使用自回归方式预测 next token，但在面对下游任务时，不再添加特定任务的架构头（Task-specific head）进行微调。其核心思想是将目标建模为 $p(\text{output}|\text{input}, \text{task})$，将自然语言作为描述和切换任务的统一接口。模型架构依然是 Decoder-Only，但参数量扩展到了 1.5B（15亿），并引入了将 LayerNorm 提前（Pre-Norm）以及 $1/\sqrt{N}$ 初始化缩放等关键架构调整，以保证深层网络的训练稳定性。</p><p>在数据构建方面强调了文本质量：避免直接使用未经清洗的大规模网页抓取数据，而是利用 Reddit 上获得 3 个以上 Karma（点赞数）的外部链接作为启发式过滤标准，构建了高质量的 WebText 数据集。同时，引入了限制跨字符类别合并的纯字节级 BPE（Byte Pair Encoding）算法，有效缓解了 OOV（未登录词）和词表碎片化问题，使模型能够处理任意的 Unicode 字符串。</p><p>在实验层面，GPT-2 采用了 Zero-shot（零样本）设定，在测试时不进行任何参数更新。仅通过拼接自然语言提示词（例如在文末加上 <code>TL;DR:</code> 引导模型生成摘要），就在 8 个语言建模数据集中的 7 个上达到了当时的 SOTA。虽然在机器翻译等复杂任务上的表现尚处初期水平，但实验清晰地展示了模型性能随容量增加呈对数线性增长的趋势。这篇论文为后续的大规模语言模型发展、提示工程（Prompt Engineering）以及上下文学习（In-Context Learning）奠定了重要的理论与实验基础。</p>]]></content>
     
     
     <categories>

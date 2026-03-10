@@ -19,27 +19,27 @@
   <meta name="author" content="hxy">
   <meta name="keywords" content="AI, NLP, Transformer, LLM, Code">
   
-    <meta name="description" content="论文链接：BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding一句话总结：BERT 抛弃了 Transformer 的 Decoder，仅保留 Encoder，通过“完形填空 (MLM)”和“下一句预测 (NSP)”两大任务，在海量无标注数据上炼就了拥有全局双向视野的语言理解大师，彻底统一">
+    <meta name="description" content="📝 核心点转变了 GPT-1 和 BERT 的“预训练+有监督微调”范式，提出语言模型本质上就是无监督的多任务学习器。坚持使用自回归方式预测 next token，但在面对下游任务时，不再添加特定任务的架构头（Task-specific head）进行微调。其核心思想是将目标建模为 $p(\text{output}|\text{input}, \text{task})$，将自然语言作为描述和切换">
 <meta property="og:type" content="article">
-<meta property="og:title" content="论文精读 | BERT：打破单向束缚的深度双向 Transformer">
-<meta property="og:url" content="https://cutesxy.github.io/2026/03/09/BERT-Note/index.html">
+<meta property="og:title" content="GPT-2: Language Models are Unsupervised Multitask Learners">
+<meta property="og:url" content="https://cutesxy.github.io/2026/03/10/GPT2-Note/index.html">
 <meta property="og:site_name" content="HXY&#39;s Academic Space">
-<meta property="og:description" content="论文链接：BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding一句话总结：BERT 抛弃了 Transformer 的 Decoder，仅保留 Encoder，通过“完形填空 (MLM)”和“下一句预测 (NSP)”两大任务，在海量无标注数据上炼就了拥有全局双向视野的语言理解大师，彻底统一">
+<meta property="og:description" content="📝 核心点转变了 GPT-1 和 BERT 的“预训练+有监督微调”范式，提出语言模型本质上就是无监督的多任务学习器。坚持使用自回归方式预测 next token，但在面对下游任务时，不再添加特定任务的架构头（Task-specific head）进行微调。其核心思想是将目标建模为 $p(\text{output}|\text{input}, \text{task})$，将自然语言作为描述和切换">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-03-09T07:25:00.000Z">
-<meta property="article:modified_time" content="2026-03-09T06:34:14.797Z">
+<meta property="article:published_time" content="2026-03-10T05:42:19.000Z">
+<meta property="article:modified_time" content="2026-03-10T05:14:27.777Z">
 <meta property="article:author" content="hxy">
+<meta property="article:tag" content="GPT">
 <meta property="article:tag" content="NLP">
-<meta property="article:tag" content="Transformer">
-<meta property="article:tag" content="深度学习">
-<meta property="article:tag" content="论文精读">
+<meta property="article:tag" content="Prompt-Engineering">
+<meta property="article:tag" content="Zero-Shot">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>论文精读 | BERT：打破单向束缚的深度双向 Transformer - HXY&#39;s Academic Space</title>
+  <title>GPT-2: Language Models are Unsupervised Multitask Learners - HXY&#39;s Academic Space</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -168,7 +168,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="论文精读 | BERT：打破单向束缚的深度双向 Transformer"></span>
+            <span id="subtitle" data-typed-text="GPT-2: Language Models are Unsupervised Multitask Learners"></span>
           
         </div>
 
@@ -179,8 +179,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-03-09 15:25" pubdate>
-          2026年3月9日 下午
+        <time datetime="2026-03-10 13:42" pubdate>
+          2026年3月10日 下午
         </time>
       </span>
     
@@ -191,7 +191,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1k 字
+          480 字
         
       </span>
     
@@ -202,7 +202,7 @@
         
         
         
-          9 分钟
+          5 分钟
         
       </span>
     
@@ -248,52 +248,14 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">论文精读 | BERT：打破单向束缚的深度双向 Transformer</h1>
+            <h1 id="seo-header">GPT-2: Language Models are Unsupervised Multitask Learners</h1>
             
             
               <div class="markdown-body">
                 
-                <blockquote>
-<p><strong>论文链接</strong>：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1810.04805">BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding</a><br><strong>一句话总结</strong>：BERT 抛弃了 Transformer 的 Decoder，仅保留 Encoder，通过“完形填空 (MLM)”和“下一句预测 (NSP)”两大任务，在海量无标注数据上炼就了拥有全局双向视野的语言理解大师，彻底统一了 NLP 的下游微调范式。</p>
-</blockquote>
-<h2 id="1-痛点与破局：为什么需要-BERT？"><a href="#1-痛点与破局：为什么需要-BERT？" class="headerlink" title="1. 痛点与破局：为什么需要 BERT？"></a>1. 痛点与破局：为什么需要 BERT？</h2><p>在 BERT 诞生前（2018年），主流的预训练模型（如初代 GPT、ELMo）都存在严重的<strong>视野受限</strong>问题：</p>
-<ul>
-<li><strong>GPT (自回归)</strong>：严格从左到右单向生成，采用 <code>subsequent_mask</code>（下三角掩码），模型无法提前看到后面的词。</li>
-<li><strong>ELMo</strong>：虽然号称双向，但只是把从左到右和从右到左的特征在最顶层做了浅层拼接（Shallow Concatenation）。</li>
-</ul>
-<p><strong>BERT 的破局点</strong>：直接拆下 Transformer 的 Encoder 层，去掉所有的因果掩码（Causal Mask），让序列中的每一个 Token 从第一层开始就能<strong>全图双向可见</strong>。</p>
-<h2 id="2-极致统一的输入表示-Input-Representations"><a href="#2-极致统一的输入表示-Input-Representations" class="headerlink" title="2. 极致统一的输入表示 (Input Representations)"></a>2. 极致统一的输入表示 (Input Representations)</h2><p>为了让模型能无缝接管“单句话分类”和“双句话问答”等各种繁杂任务，BERT 设计了一套极其优雅的“集装箱打包标准”。</p>
-<p>一段连续的文本进入 BERT 前，会进行<strong>三位一体的暴力相加</strong>：</p>
-<ol>
-<li><strong>Token Embeddings</strong>：WordPiece 切词（词表大小 30,000）。句首强行插入 <code>[CLS]</code>（班长，用于聚合全局句子信息），句间插入 <code>[SEP]</code>（分隔符）。</li>
-<li><strong>Segment Embeddings</strong>：引入 <em>E<sub>A</sub></em> 和 <em>E<sub>B</sub></em> 两个学出来的阵营向量，让模型分清哪些词属于第一句话，哪些属于第二句话。</li>
-<li><strong>Position Embeddings</strong>：给每个位置发一个号码牌，不同于原版 Transformer 的三角函数，BERT 的位置向量是自己学出来的。</li>
-</ol>
-<h2 id="3-两大核心预训练神技-Pre-training-Tasks"><a href="#3-两大核心预训练神技-Pre-training-Tasks" class="headerlink" title="3. 两大核心预训练神技 (Pre-training Tasks)"></a>3. 两大核心预训练神技 (Pre-training Tasks)</h2><p>既然视野全开了，如果让它直接预测下一个词，模型就会“作弊”直接偷看答案。为此，BERT 发明了两个自监督任务：</p>
-<h3 id="Task-1-掩码语言模型-Masked-LM-MLM"><a href="#Task-1-掩码语言模型-Masked-LM-MLM" class="headerlink" title="Task 1: 掩码语言模型 (Masked LM, MLM)"></a>Task 1: 掩码语言模型 (Masked LM, MLM)</h3><p>也就是暴力的“完形填空”。随机盖住句子中 15% 的词，让模型根据上下文去猜。<br>为了缓解预训练满眼都是 <code>[MASK]</code>，而微调时却没有 <code>[MASK]</code> 的“脱节”问题，作者设计了精妙的 <strong>80-10-10 妥协法则</strong>：</p>
-<ul>
-<li>80% 的时间替换为 <code>[MASK]</code></li>
-<li>10% 的时间替换为一个随机词（注入噪音，逼迫模型结合上下文纠错）</li>
-<li>10% 的时间保持原词不变（告诉模型：有时你看到的词是对的）</li>
-</ul>
-<h3 id="Task-2-下一句预测-Next-Sentence-Prediction-NSP"><a href="#Task-2-下一句预测-Next-Sentence-Prediction-NSP" class="headerlink" title="Task 2: 下一句预测 (Next Sentence Prediction, NSP)"></a>Task 2: 下一句预测 (Next Sentence Prediction, NSP)</h3><p>为了让模型理解句子间的逻辑关系，构建了一个廉价的二分类判断题：</p>
-<ul>
-<li>50% 的情况，句子 B 确实紧跟在句子 A 后面。</li>
-<li>50% 的情况，句子 B 是从语料库里随机抓取的。<br>模型通过提取 <code>[CLS]</code> 对应输出的最终向量 <em>C</em>，来判断这两句话是否连续。</li>
-</ul>
-<h2 id="4-降维打击的微调范式-Fine-Tuning"><a href="#4-降维打击的微调范式-Fine-Tuning" class="headerlink" title="4. 降维打击的微调范式 (Fine-Tuning)"></a>4. 降维打击的微调范式 (Fine-Tuning)</h2><p>BERT 真正引发行业海啸的，是它极其低廉和统一的微调成本。</p>
-<ul>
-<li><strong>早期深度融合</strong>：不再像以前那样把两句话分别编码再做交互，而是直接拼成 <code>[CLS] A [SEP] B [SEP]</code> 送进模型，在底层 Attention 就完成了跨句子的深度交互。</li>
-<li><strong>按需取件</strong>：<ul>
-<li><strong>句子级任务</strong>（如情感分析）：直接取顶层 <code>[CLS]</code> 向量外接一个线性层。</li>
-<li><strong>Token 级任务</strong>（如 NER、SQuAD问答）：取每个词对应的顶层输出向量 <em>T<sub>i</sub></em> 进行预测。</li>
-</ul>
-</li>
-</ul>
-<h2 id="5-个人思考与启发"><a href="#5-个人思考与启发" class="headerlink" title="5. 个人思考与启发"></a>5. 个人思考与启发</h2><ol>
-<li><strong>大道至简的工程美学</strong>：把复杂的结构对齐问题，全部化简为 Token 序列的拼接；把深奥的上下文理解，化简为廉价的完形填空。</li>
-<li><strong>GPT 与 BERT 的宿命分野</strong>：BERT 去掉 Decoder 走向了极致的<strong>阅读理解</strong>，GPT 去掉 Encoder 走向了极致的<strong>自回归生成</strong>。在 2026 年回头看，虽然大模型时代被单向生成模型（LLM）统治，但 BERT 留下的全局注意力思想，依然在今天的 Embedding 向量检索（如 RAG）甚至扩散大模型（如 LLaDA 的 Masked Diffusion）中熠熠生辉。</li>
-</ol>
+                <h2 id="📝-核心点"><a href="#📝-核心点" class="headerlink" title="📝 核心点"></a>📝 核心点</h2><p>转变了 GPT-1 和 BERT 的“预训练+有监督微调”范式，提出语言模型本质上就是无监督的多任务学习器。坚持使用自回归方式预测 next token，但在面对下游任务时，不再添加特定任务的架构头（Task-specific head）进行微调。其核心思想是将目标建模为 $p(\text{output}|\text{input}, \text{task})$，将自然语言作为描述和切换任务的统一接口。模型架构依然是 Decoder-Only，但参数量扩展到了 1.5B（15亿），并引入了将 LayerNorm 提前（Pre-Norm）以及 $1/\sqrt{N}$ 初始化缩放等关键架构调整，以保证深层网络的训练稳定性。</p>
+<p>在数据构建方面强调了文本质量：避免直接使用未经清洗的大规模网页抓取数据，而是利用 Reddit 上获得 3 个以上 Karma（点赞数）的外部链接作为启发式过滤标准，构建了高质量的 WebText 数据集。同时，引入了限制跨字符类别合并的纯字节级 BPE（Byte Pair Encoding）算法，有效缓解了 OOV（未登录词）和词表碎片化问题，使模型能够处理任意的 Unicode 字符串。</p>
+<p>在实验层面，GPT-2 采用了 Zero-shot（零样本）设定，在测试时不进行任何参数更新。仅通过拼接自然语言提示词（例如在文末加上 <code>TL;DR:</code> 引导模型生成摘要），就在 8 个语言建模数据集中的 7 个上达到了当时的 SOTA。虽然在机器翻译等复杂任务上的表现尚处初期水平，但实验清晰地展示了模型性能随容量增加呈对数线性增长的趋势。这篇论文为后续的大规模语言模型发展、提示工程（Prompt Engineering）以及上下文学习（In-Context Learning）奠定了重要的理论与实验基础。</p>
 
                 
               </div>
@@ -312,7 +274,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/AI-LLMs/" class="category-chain-item">AI &amp; LLMs</a>
+  <a href="/categories/Paper-Reading/" class="category-chain-item">Paper-Reading</a>
   
   
 
@@ -329,11 +291,11 @@
       
         <a href="/tags/NLP/" class="print-no-link">#NLP</a>
       
-        <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="print-no-link">#深度学习</a>
+        <a href="/tags/GPT/" class="print-no-link">#GPT</a>
       
-        <a href="/tags/Transformer/" class="print-no-link">#Transformer</a>
+        <a href="/tags/Zero-Shot/" class="print-no-link">#Zero-Shot</a>
       
-        <a href="/tags/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB/" class="print-no-link">#论文精读</a>
+        <a href="/tags/Prompt-Engineering/" class="print-no-link">#Prompt-Engineering</a>
       
     </div>
   
@@ -345,8 +307,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>论文精读 | BERT：打破单向束缚的深度双向 Transformer</div>
-      <div>https://cutesxy.github.io/2026/03/09/BERT-Note/</div>
+      <div>GPT-2: Language Models are Unsupervised Multitask Learners</div>
+      <div>https://cutesxy.github.io/2026/03/10/GPT2-Note/</div>
     </div>
     <div class="license-meta">
       
@@ -358,7 +320,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年3月9日</div>
+          <div>2026年3月10日</div>
         </div>
       
       
@@ -390,18 +352,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/03/10/Transformer-Code-Note/" title="GPT-2: Language Models are Unsupervised Multitask Learners">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">GPT-2: Language Models are Unsupervised Multitask Learners</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/03/03/GPT1-Note/" title="GPT-1: Improving Language Understanding by Generative Pre-Training">
-                        <span class="hidden-mobile">GPT-1: Improving Language Understanding by Generative Pre-Training</span>
+                      <a href="/2026/03/10/Transformer-Code-Note/" title="GPT-2: Language Models are Unsupervised Multitask Learners">
+                        <span class="hidden-mobile">GPT-2: Language Models are Unsupervised Multitask Learners</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -458,6 +414,12 @@
 
 
   
+
+
+  
+  
+
+
 
 
 
@@ -676,6 +638,49 @@
 
 
   <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
 
   <script  src="/js/local-search.js" ></script>
 
